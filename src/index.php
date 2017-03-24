@@ -15,6 +15,10 @@ class Index {
         
         $dbanalysis = new DbAnalysis($mysql_helper);
         var_dump($dbanalysis->ReadWritePrecent());
+        var_dump($dbanalysis->slowQueryPrecent());
+        var_dump($dbanalysis->connectionCount());
+        var_dump($dbanalysis->threadCache());
+        var_dump($dbanalysis->tableCache());
     }
 }
 

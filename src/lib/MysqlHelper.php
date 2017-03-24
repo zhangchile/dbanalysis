@@ -40,8 +40,8 @@ class MysqlHelper {
     * @return int 
     * @version 2017年3月24日
     */
-    public function getMysqlValue() {
-        $arr = $this->statement->fetchAll(\PDO::FETCH_COLUMN, 1);
+    public function getMysqlValue($sql) {
+        $arr = $this->pdo->query($sql)->fetchAll(\PDO::FETCH_COLUMN, 1);
         return array_pop($arr);
     }
 }
