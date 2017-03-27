@@ -5,7 +5,9 @@ use lib\DbAnalysis;
 use lib\MysqlHelper;
 
 class Index {
-    public function Test() {
+    public $dbanalysis = null;
+    
+    public function __construct() {
         $dsn = 'mysql:host=localhost;port=3306;dbname=hiidosys_bak';
         $username = 'root';
         $passwd = '';
@@ -13,13 +15,67 @@ class Index {
         
         $mysql_helper = new MysqlHelper($dsn, $username, $passwd, $options);
         
-        $dbanalysis = new DbAnalysis($mysql_helper);
-        var_dump($dbanalysis->ReadWritePrecent());
-        var_dump($dbanalysis->slowQueryPrecent());
-        var_dump($dbanalysis->connectionCount());
-        var_dump($dbanalysis->threadCache());
-        var_dump($dbanalysis->tableCache());
+        $this->dbanalysis = new DbAnalysis($mysql_helper);
     }
+    
+    public function Test() {
+
+        var_dump($this->dbanalysis->ReadWritePrecent());
+        var_dump($this->dbanalysis->slowQueryPrecent());
+        var_dump($this->dbanalysis->connectionCount());
+        var_dump($this->dbanalysis->threadCache());
+        var_dump($this->dbanalysis->tableCache());
+        var_dump($this->dbanalysis->tmpTable());
+        var_dump($this->dbanalysis->extraSort());
+        var_dump($this->dbanalysis->binLog());
+        var_dump($this->dbanalysis->redo());
+        var_dump($this->dbanalysis->innodbCache());
+        var_dump($this->dbanalysis->smartTest());
+        
+    }
+    
+    public function baseData() {
+        echo json_encode( array_merge($this->dbanalysis->getBaseCount(), $this->dbanalysis->readWritePrecent()) );
+    }
+    
+    public function connectionCount() {
+        echo json_encode( $this->dbanalysis->connectionCount() );
+    }
+    
+    public function cacheCount() {
+        $data = [
+                'threadCache' => $this->dbanalysis->threadCache(),
+                'tableCache' => $this->dbanalysis->tableCache(),
+                'innodbCache' => $this->dbanalysis->innodbCache(),
+        ];
+        echo json_encode( $data );
+    }
+    
+    public function otherData() {
+        $data = [
+                'tmpTable' => $this->dbanalysis->tmpTable(),
+                'extraSort' => $this->dbanalysis->extraSort(),
+                'binLog' => $this->dbanalysis->binLog(),
+                'redo' => $this->dbanalysis->redo(),
+        ];
+        
+        echo json_encode( $data );
+    }
+
 }
 
-(new Index())->Test();
+$map = [
+        'index' => 'index',
+        'test' => 'test',
+        'baseData' => 'baseData',
+        'connectionCount' => 'connectionCount',
+        'cacheCount' => 'cacheCount',
+        'otherData' => 'otherData',
+];
+
+if ( isset($_GET['api']) && in_array($_GET['api'], $map) ) {
+    (new Index())->$_GET['api']();
+} else {
+    echo(-1);
+    exit;
+}

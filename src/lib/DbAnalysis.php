@@ -35,6 +35,22 @@ class DbAnalysis {
     }
     
     /**
+    * 获得基本统计数据
+    *
+    * @param type 
+    * @return type 
+    * @version 2017年3月27日
+    */
+    public function getBaseCount() {
+        return [
+                'select' => $this->select_count,
+                'insert' => $this->insert_count,
+                'update' => $this->update_count,
+                'delete' => $this->delete_count,
+        ];
+    }
+    
+    /**
     * 读写比例
     *
     * @param type 
@@ -64,7 +80,7 @@ class DbAnalysis {
     */
     public function slowQueryPrecent() {
         // 获得服务器启动到目前慢查询操作记录的次数
-        $slow_query = $this->mysql_helper->getMysqlValue("show global status like 'Slow_queries '");
+        $slow_query = $this->mysql_helper->getMysqlValue("show global status like 'Slow_queries'");
         
         return round( $slow_query / ($this->select_count + $this->update_count + $this->delete_count) * 100, 2 );
     }
@@ -208,7 +224,9 @@ class DbAnalysis {
         $binlog_cache_disk_use = $this->mysql_helper->getMysqlValue("show global status like 'Binlog_cache_disk_use'");
         // 缓冲 binlog 的总次数，包括 binlog 缓冲区和在磁盘上创建临时文件保存 binlog 的总次数
         $binlog_cache_use = $this->mysql_helper->getMysqlValue("show global status like 'Binlog_cache_use'");
-        
+        if ($binlog_cache_use == 0) {
+            return 0;
+        }
         return round( $binlog_cache_disk_use / $binlog_cache_use * 100, 2 );
     }
     
@@ -222,7 +240,7 @@ class DbAnalysis {
     */
     public function redo() {
         // 查看 innodb redo 日志等待缓冲区刷新的次数
-        $innodb_log_waits = $this->mysql_helper->getMysqlValue("select global status like 'Innodb_log_waits'");
+        $innodb_log_waits = $this->mysql_helper->getMysqlValue("show global status like 'Innodb_log_waits'");
         return $innodb_log_waits;
     }
     

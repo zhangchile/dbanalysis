@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DbAnalysis</title>
+</head>
+<link rel="stylesheet" type="text/css" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+<body>
+<style type="text/css">
+.container {
+  margin: 50px auto;
+  padding: 15px;
+  min-height: 1000px;
+  border: 1px solid #eee;
+  -moz-box-shadow: 2px 2px 10px #ABABAB;
+  -webkit-box-shadow: 2px 2px 10px #ABABAB;
+  box-shadow: 2px 2px 10px #ABABAB;
+}
+
+section {
+  display: block;
+  clear: both;
+}
+</style>
+<div id="app" class="container">
+
+<section class="curd">
+  <div class="col-md-6">
+    <ul>
+      <li>query:</li>
+      <li>insert:</li>
+      <li>update:</li>
+      <li>delete:</li>
+    </ul>
+  </div>
+
+  <div class="col-md-6">
+    <h2>#pie chart</h2>
+    <div id="curd-pie"></div>
+  </div>
+
+</section>
+
+<section class="connection">
+  <div class="col-md-4">
+    <h2>#connection:</h2>
+    <h3>555</h3>
+  </div>
+  <div class="col-md-8">
+    <h2>#line chart</h2>
+    <div id="conn-line"></div>
+  </div>
+</section>
+
+<section class="cache">
+  <div class="col-md-12">
+    <h2>#cache</h2>
+    <ul>
+      <li>threadCache</li>
+      <li>tableCache</li>
+      <li>innodbCache</li>
+    </ul>
+  </div>
+
+</section>
+
+<section class="others">
+  <div class="col-md-12">
+    <h2>#others</h2>
+    <ul>
+      <li>tmpTable</li>
+      <li>extraSort</li>
+      <li>binLog</li>
+      <li>redo</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+
+</body>
+<script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./node_modules/vue/dist/vue.min.js"></script>
+<script type="text/javascript" src="./js/config.js"></script>
+<script type="text/javascript">
+
+</script>
+</html>
