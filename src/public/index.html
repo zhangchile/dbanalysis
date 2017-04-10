@@ -27,15 +27,15 @@ section {
 <section class="curd">
   <div class="col-md-6">
     <ul>
-      <li v-bind:data="message">query:{{message}}</li>
-      <li>insert:</li>
-      <li>update:</li>
-      <li>delete:</li>
+      <li>query:{{ pieData.select }}</li>
+      <li>insert:{{ pieData.insert }}</li>
+      <li>update:{{ pieData.update }}</li>
+      <li>delete:{{ pieData.delete }}</li>
     </ul>
   </div>
 
   <div class="col-md-6">
-    <h2>#pie chart</h2>
+    <h3 class="h3">read: {{ pieData.read }}%  write: {{ pieData.write }}%</h3>
     <div id="curd-pie"></div>
   </div>
 
@@ -44,7 +44,7 @@ section {
 <section class="connection">
   <div class="col-md-4">
     <h2>#connection:</h2>
-    <h3>555</h3>
+    <h3>{{ connections }}</h3>
   </div>
   <div class="col-md-8">
     <h2>#line chart</h2>
@@ -85,11 +85,24 @@ section {
 <script type="text/javascript" src="./node_modules/requirejs/require.js"></script>
 <script type="text/javascript" src="./js/config.js"></script>
 <script type="text/javascript">
-requirejs(['vue', 'c3'], function (Vue, c3) {
+requirejs(['vue', 'd3', 'c3'], function (Vue, d3, c3) {
+
   var app = new Vue({
     el: '#app',
     data: {
-      message: 'Hello Vue!'
+      message: 'Hello Vue!',
+      pieData: {
+        select: '124',
+      },
+      lineData:{
+        connections: '',
+      },
+    },
+    computed: {
+      connections: function () {
+        var connArr = this.lineData.connections.split(",");
+        return connArr[connArr.length - 1];
+      }
     },
     methods: {
       init: function () {
@@ -98,44 +111,104 @@ requirejs(['vue', 'c3'], function (Vue, c3) {
     },
     created: function () {
 
-      var chart = c3.generate({
-        bindto: '#curd-pie',
-          data: {
-              // iris data from R
-              columns: [
-                  ['data1', 30],
-                  ['data2', 120],
-              ],
-              type : 'pie',
-              onclick: function (d, i) { console.log("onclick", d, i); },
-              onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-              onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-          }
+      // var chart = c3.generate({
+      //     bindto: '#conn-line',
+      //     data: {
+      //       columns: [
+      //         ['data1', 30, 200, 100, 400, 150, 250],
+      //         ['data2', 50, 20, 10, 40, 15, 25]
+      //       ]
+      //     }
+      // });
+    },
+    mounted: function () {
+      var that = this;
+      var baseUrl = "/dbanalysis/src/";
+      // 加载baseData
+      $.get(baseUrl + '?api=baseData', function (data) {
+        console.log(data);
+        //{"select":"9744","insert":"82","update":"80","delete":"24","read":98.13,"write":1.87}
+        that.pieData = JSON.parse(data);
+
+        var chartPie = c3.generate({
+          bindto: '#curd-pie',
+            data: {
+                // iris data from R
+                columns: [
+                    ["select", that.pieData.select*1],
+                    ["insert", that.pieData.insert*1],
+                    ["update", that.pieData.update*1],
+                    ["delete", that.pieData.delete*1],
+                ],
+                type : 'pie',
+            }
+        });
       });
 
-      setTimeout(function () {
-          chart.load({
+      //加载 连接数
+      var chartLine  = {};
+      $.get(baseUrl + "?api=connectionCount", function (data) {
+        console.log(data);
+        that.lineData = JSON.parse(data);
+
+        chartLine = c3.generate({
+            bindto: '#conn-line',
+            data: {
               columns: [
-                  ["setosa", 0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.4, 0.4, 0.3, 0.3, 0.3, 0.2, 0.4, 0.2, 0.5, 0.2, 0.2, 0.4, 0.2, 0.2, 0.2, 0.2, 0.4, 0.1, 0.2, 0.2, 0.2, 0.2, 0.1, 0.2, 0.2, 0.3, 0.3, 0.2, 0.6, 0.4, 0.3, 0.2, 0.2, 0.2, 0.2],
-                  ["versicolor", 1.4, 1.5, 1.5, 1.3, 1.5, 1.3, 1.6, 1.0, 1.3, 1.4, 1.0, 1.5, 1.0, 1.4, 1.3, 1.4, 1.5, 1.0, 1.5, 1.1, 1.8, 1.3, 1.5, 1.2, 1.3, 1.4, 1.4, 1.7, 1.5, 1.0, 1.1, 1.0, 1.2, 1.6, 1.5, 1.6, 1.5, 1.3, 1.3, 1.3, 1.2, 1.4, 1.2, 1.0, 1.3, 1.2, 1.3, 1.3, 1.1, 1.3],
-                  ["virginica", 2.5, 1.9, 2.1, 1.8, 2.2, 2.1, 1.7, 1.8, 1.8, 2.5, 2.0, 1.9, 2.1, 2.0, 2.4, 2.3, 1.8, 2.2, 2.3, 1.5, 2.3, 2.0, 2.0, 1.8, 2.1, 1.8, 1.8, 1.8, 2.1, 1.6, 1.9, 2.0, 2.2, 1.5, 1.4, 2.3, 2.4, 1.8, 1.8, 2.1, 2.4, 2.3, 1.9, 2.3, 2.5, 2.3, 1.9, 2.0, 2.3, 1.8],
+                ['maxConnections', that.lineData.maxConnections],
+                ['maxUsedConn', that.lineData.maxUsedConn],
+                ['connections', that.lineData.connections],
+                ['threadConnected', that.lineData.threadConnected],
+                ['threadRunning', that.lineData.threadRunning],
+                ['maxConnPrecent', that.lineData.maxConnPrecent],
+                ['maxUseConnPrecent', that.lineData.maxUseConnPrecent],
               ]
-          });
-      }, 1500);
+            }
+        });
+      });
 
-      setTimeout(function () {
-          chart.unload({
-              ids: 'data1'
-          });
-          chart.unload({
-              ids: 'data2'
-          });
-      }, 2500);
 
-    },
+      setInterval(function () {
+        $.get(baseUrl + "?api=connectionCount", function (data) {
+          var jsonData = JSON.parse(data);
+          that.lineData.maxConnections = that.lineData.maxConnections + "," + jsonData.maxConnections;
+          that.lineData.maxUsedConn = that.lineData.maxUsedConn + "," + jsonData.maxUsedConn;
+          that.lineData.connections = that.lineData.connections + "," + jsonData.connections;
+          that.lineData.threadConnected = that.lineData.threadConnected + "," + jsonData.threadConnected;
+          that.lineData.threadRunning = that.lineData.threadRunning + "," + jsonData.threadRunning;
+          that.lineData.maxConnPrecent = that.lineData.maxConnPrecent + "," + jsonData.maxConnPrecent;
+          that.lineData.maxUseConnPrecent = that.lineData.maxUseConnPrecent + "," + jsonData.maxUseConnPrecent;
+
+          //切割前面的数据15个
+          var maxPoint = 15;
+          if ( (that.lineData.maxConnections).split(",").length >= maxPoint) {
+            that.lineData.maxConnections = that.lineData.maxConnections.split(",").splice(1, maxPoint).join(",");
+            that.lineData.maxUsedConn = that.lineData.maxUsedConn.split(",").splice(1, maxPoint).join(",");
+            that.lineData.connections = that.lineData.connections.split(",").splice(1, maxPoint).join(",");
+            that.lineData.threadConnected = that.lineData.threadConnected.split(",").splice(1, maxPoint).join(",");
+            that.lineData.threadRunning = that.lineData.threadRunning.split(",").splice(1, maxPoint).join(",");
+            that.lineData.maxConnPrecent = that.lineData.maxConnPrecent.split(",").splice(1, maxPoint).join(",");
+            that.lineData.maxUseConnPrecent = that.lineData.maxUseConnPrecent.split(",").splice(1, maxPoint).join(",");
+          }
+
+          chartLine.load({
+            columns: [
+                ('maxConnections,' + that.lineData.maxConnections).split(","),
+                ('maxUsedConn,' + that.lineData.maxUsedConn).split(","),
+                ('connections,' + that.lineData.connections).split(","),
+                ('threadConnected,' + that.lineData.threadConnected).split(","),
+                ('threadRunning,' + that.lineData.threadRunning).split(","),
+                ('maxConnPrecent,' + that.lineData.maxConnPrecent).split(","),
+                ('maxUseConnPrecent' + that.lineData.maxUseConnPrecent).split(","),
+            ],
+          });
+        });
+      }, 5000);
+    }
   });
 
-
 });
+
+
 </script>
 </html>

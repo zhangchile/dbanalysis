@@ -95,7 +95,7 @@ class DbAnalysis {
     */
     public function connectionCount() {
         // 获得数据库运行的最大连接数 #允许的最大连接数
-        $max_conn = $this->mysql_helper->getMysqlValue("show global status like 'max_connections'");
+        $max_conn = $this->mysql_helper->getMysqlValue("show global status like 'Connections'");
         // 获得最大一次的连接数 #最大突发并行连接数  
         $max_used_conn = $this->mysql_helper->getMysqlValue("show global status like 'Max_used_connections'");
         // 获得数据库运行到目前，总共被连接了多少次 #登陆的次数
@@ -119,13 +119,13 @@ class DbAnalysis {
 
         
         return [
-                'max_connections' => $max_conn,
-                'max_used_conn' => $max_used_conn,
+                'maxConnections' => $max_conn,
+                'maxUsedConn' => $max_used_conn,
                 'connections' => $conn,
-                'thread_connected' => $thread_connected,
-                'thread_running' => $thread_running,
-                'max_conn_precent' => $max_conn_precent,
-                'max_use_conn_precent' => $max_use_conn_precent,
+                'threadConnected' => $thread_connected,
+                'threadRunning' => $thread_running,
+                'maxConnPrecent' => $max_conn_precent,
+                'maxUseConnPrecent' => $max_use_conn_precent,
         ];
         
     }
