@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>DbAnalysis</title>
 </head>
 <link rel="stylesheet" type="text/css" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
@@ -36,6 +37,9 @@ section {
 
   <div class="col-md-6">
     <h3 class="h3">read: {{ pieData.read }}%  write: {{ pieData.write }}%</h3>
+    <label class="checkbox">
+      <input type="checkbox" v-model="autoRefresh"> 是否自动刷新
+    </label>
     <div id="curd-pie"></div>
   </div>
 
@@ -56,9 +60,9 @@ section {
   <div class="col-md-12">
     <h2>#cache</h2>
     <ul>
-      <li>threadCache</li>
-      <li>tableCache</li>
-      <li>innodbCache</li>
+      <li>threadCache: {{ cacheData.threadCache }}</li>
+      <li>tableCache: {{ cacheData.tableCache }}</li>
+      <li>innodbCache: {{ cacheData.innodbCache }}</li>
     </ul>
   </div>
 
@@ -67,17 +71,17 @@ section {
 <section class="others">
   <div class="col-md-12">
     <h2>#others</h2>
+    <a href="" >刷新</a>
     <ul>
-      <li>tmpTable</li>
-      <li>extraSort</li>
-      <li>binLog</li>
-      <li>redo</li>
+      <li>tmpTable: {{ otherData.tmpTable }}</li>
+      <li>extraSort: {{ otherData.extraSort }}</li>
+      <li>binLog: {{ otherData.binLog }}</li>
+      <li>redo: {{ otherData.redo }}</li>
     </ul>
   </div>
 </section>
 
 </div>
-
 
 </body>
 <script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
@@ -86,17 +90,20 @@ section {
 <script type="text/javascript" src="./js/config.js"></script>
 <script type="text/javascript">
 requirejs(['vue', 'd3', 'c3'], function (Vue, d3, c3) {
-
   var app = new Vue({
     el: '#app',
     data: {
       message: 'Hello Vue!',
       pieData: {
-        select: '124',
+        select: '',
       },
       lineData:{
         connections: '',
       },
+      cacheData: {},
+      otherData: {},
+      autoRefresh: false,
+      timer: [],
     },
     computed: {
       connections: function () {
@@ -107,7 +114,14 @@ requirejs(['vue', 'd3', 'c3'], function (Vue, d3, c3) {
     methods: {
       init: function () {
 
-      }
+      },
+      refresh: function () {
+
+      },
+      clearTimer: function () {
+
+      },
+
     },
     created: function () {
 
@@ -204,9 +218,23 @@ requirejs(['vue', 'd3', 'c3'], function (Vue, d3, c3) {
           });
         });
       }, 5000);
+
+      // 获取cacheCount数据
+      $.get(baseUrl + '?api=cacheCount', function (data) {
+        console.log(data);
+        // {"threadCache":0.04,"tableCache":{"hit_precent":99.24,"opened_talbes":"9000"},"innodbCache":100}
+        that.cacheData = JSON.parse(data);
+
+      });
+
+      // 获取其他数据 
+      $.get(baseUrl + '?api=otherData', function (data) {
+        console.log(data);
+        // {"tmpTable":0.29,"extraSort":0,"binLog":0,"redo":"0"}
+        that.otherData = JSON.parse(data);
+      });
     }
   });
-
 });
 
 
