@@ -22,24 +22,51 @@ section {
   display: block;
   clear: both;
 }
+
+.curd-item {
+
+}
+
+.curd-title {
+  display: block;
+  font-size: 18px;
+}
+
+.curd-data {
+  font-size: 40px;
+
+}
 </style>
 <div id="app" class="container">
 
 <section class="curd">
   <div class="col-md-6">
-    <ul>
-      <li>query:{{ pieData.select }}</li>
-      <li>insert:{{ pieData.insert }}</li>
-      <li>update:{{ pieData.update }}</li>
-      <li>delete:{{ pieData.delete }}</li>
-    </ul>
+    <div class="curd-item">
+      <span class="curd-data">{{ pieData.select }}</span>
+      <span class="curd-title">query</span>
+    </div>
+
+    <div class="curd-item">
+      <span class="curd-data">{{ pieData.insert }}</span>
+      <span class="curd-title">insert</span>
+    </div>
+
+    <div class="curd-item">
+      <span class="curd-data">{{ pieData.update }}</span>
+      <span class="curd-title">update</span>
+    </div>
+
+    <div class="curd-item">
+      <span class="curd-data">{{ pieData.delete }}</span>
+      <span class="curd-title">delete</span>
+    </div>
   </div>
 
   <div class="col-md-6">
-    <h3 class="h3">read: {{ pieData.read }}%  write: {{ pieData.write }}%</h3>
-    <label class="checkbox">
+    <h3 class="h3 text-center">read: {{ pieData.read }}%  write: {{ pieData.write }}%</h3>
+<!--     <label class="checkbox">
       <input type="checkbox" v-model="autoRefresh"> 是否自动刷新
-    </label>
+    </label> -->
     <div id="curd-pie"></div>
   </div>
 
@@ -47,31 +74,33 @@ section {
 
 <section class="connection">
   <div class="col-md-4">
-    <h2>#connection:</h2>
+    <h1>connection</h1>
     <h3>{{ connections }}</h3>
   </div>
   <div class="col-md-8">
-    <h2>#line chart</h2>
+    <h2 class="text-center">line chart</h2>
     <div id="conn-line"></div>
   </div>
 </section>
 
 <section class="cache">
   <div class="col-md-12">
-    <h2>#cache</h2>
+    <h1>cache</h1>
     <ul>
       <li>threadCache: {{ cacheData.threadCache }}</li>
       <li>tableCache: {{ cacheData.tableCache }}</li>
       <li>innodbCache: {{ cacheData.innodbCache }}</li>
     </ul>
+
+
+
   </div>
 
 </section>
 
 <section class="others">
   <div class="col-md-12">
-    <h2>#others</h2>
-    <a href="" >刷新</a>
+    <h1>others</h1>
     <ul>
       <li>tmpTable: {{ otherData.tmpTable }}</li>
       <li>extraSort: {{ otherData.extraSort }}</li>
