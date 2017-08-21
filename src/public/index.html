@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>DbAnalysis</title>
 </head>
-<link rel="stylesheet" type="text/css" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="./node_modules/c3/c3.css">
+<link rel="stylesheet" type="text/css" href="/public/node_modules/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/public/node_modules/c3/c3.css">
 <body>
 <style type="text/css">
 .container {
@@ -78,7 +78,7 @@ section {
     <h3>{{ connections }}</h3>
   </div>
   <div class="col-md-8">
-    <h2 class="text-center">line chart</h2>
+    <h2 class="text-center">Connections</h2>
     <div id="conn-line"></div>
   </div>
 </section>
@@ -113,10 +113,10 @@ section {
 </div>
 
 </body>
-<script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="./node_modules/requirejs/require.js"></script>
-<script type="text/javascript" src="./js/config.js"></script>
+<script type="text/javascript" src="/public/node_modules/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="/public/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/public/node_modules/requirejs/require.js"></script>
+<script type="text/javascript" src="/public/js/config.js"></script>
 <script type="text/javascript">
 requirejs(['vue', 'd3', 'c3'], function (Vue, d3, c3) {
   var app = new Vue({
@@ -242,7 +242,7 @@ requirejs(['vue', 'd3', 'c3'], function (Vue, d3, c3) {
                 ('threadConnected,' + that.lineData.threadConnected).split(","),
                 ('threadRunning,' + that.lineData.threadRunning).split(","),
                 ('maxConnPrecent,' + that.lineData.maxConnPrecent).split(","),
-                ('maxUseConnPrecent' + that.lineData.maxUseConnPrecent).split(","),
+                ('maxUseConnPrecent,' + that.lineData.maxUseConnPrecent).split(","),
             ],
           });
         });

@@ -18,8 +18,12 @@ class Index {
         $this->dbanalysis = new DbAnalysis($mysql_helper);
     }
     
-    public function Test() {
+    public function index() {
 
+        return include('./public/index.html');
+    }
+    
+    public function Test() {
         var_dump($this->dbanalysis->ReadWritePrecent());
         var_dump($this->dbanalysis->slowQueryPrecent());
         var_dump($this->dbanalysis->connectionCount());
@@ -31,7 +35,6 @@ class Index {
         var_dump($this->dbanalysis->redo());
         var_dump($this->dbanalysis->innodbCache());
         var_dump($this->dbanalysis->smartTest());
-        
     }
     
     public function baseData() {
@@ -73,8 +76,9 @@ $map = [
         'otherData' => 'otherData',
 ];
 
-if ( isset($_GET['api']) && in_array($_GET['api'], $map) ) {
-    (new Index())->$_GET['api']();
+$api = isset($_GET['api']) ? $_GET['api'] : 'index';
+if ( in_array($api, $map) ) {
+    (new Index())->$api();
 } else {
     echo(-1);
     exit;
